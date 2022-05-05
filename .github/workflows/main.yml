@@ -65,7 +65,6 @@ jobs:
         run: |
           ls -l .
           python train.py
-          mv model.json model.${{ steps.vars.outputs.sha_short }}.json
           echo "Trained model ${{ steps.vars.outputs.sha_short }} with data 0cfc9d2"
           ls -l .
 
