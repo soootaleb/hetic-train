@@ -43,7 +43,7 @@ jobs:
       - run: |
           set -x
           docker version
-          export dataset_commit_id=${{ github.event.client_payload.dataset_commit_id || "latest" }}
+          export dataset_commit_id=${{ github.event.client_payload.dataset_commit_id || 'latest' }}
           container_id=$(docker create soootaleb/hetic-data:$dataset_commit_id)
           docker cp "$container_id:/data/input.data.json" .
           docker cp "$container_id:/data/output.data.json" .
