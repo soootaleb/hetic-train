@@ -44,9 +44,10 @@ jobs:
           set -x
           docker version
           container_id=$(docker create soootaleb/hetic-data:0cfc9d2)
-          docker cp "$container_id:/data/input.data.json" /data
-          docker cp "$container_id:/data/output.data.json" /data
-          ls -l /data
+          docker cp "$container_id:/data/input.data.json" .
+          docker cp "$container_id:/data/output.data.json" .
+          pwd
+          ls -l .
 
       ############ PYTHON #############
       - name: setup python
@@ -61,7 +62,8 @@ jobs:
       
       - name: execute py script # run file
         run: |
-          ls -l /data
+          ls -l .
+          rm model.json
           python train.py
 
       ########### DOCKER ##################
@@ -72,7 +74,7 @@ jobs:
           # relative path to the place where source code with Dockerfile is located
           context: .
           # Note: tags has to be all lower-case
-          tags: soootaleb/hetic-data:${{ steps.vars.outputs.sha_short }}
+          tags: soootaleb/hetic-train:${{ steps.vars.outputs.sha_short }}
           # build on feature branches, push only on main branch
           push: true # ${{ github.ref == 'refs/heads/main' }}
 
