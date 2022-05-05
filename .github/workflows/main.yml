@@ -78,7 +78,7 @@ jobs:
           context: .
           file: Model.dockerfile
           # Note: tags has to be all lower-case
-          tags: latest,soootaleb/hetic-model:${{ steps.vars.outputs.sha_short }}
+          tags: soootaleb/hetic-data:latest,soootaleb/hetic-model:${{ steps.vars.outputs.sha_short }}
           # build on feature branches, push only on main branch
           push: true # ${{ github.ref == 'refs/heads/main' }}
 
