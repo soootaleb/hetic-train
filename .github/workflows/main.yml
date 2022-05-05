@@ -43,10 +43,11 @@ jobs:
       - run: |
           set -x
           docker version
-          container_id=$(docker create soootaleb/hetic-data:0cfc9d2)
+          export dataset_commit_id=${{ github.event.client_payload.dataset_commit_id || "latest" }}
+          container_id=$(docker create soootaleb/hetic-data:$dataset_commit_id)
           docker cp "$container_id:/data/input.data.json" .
           docker cp "$container_id:/data/output.data.json" .
-          echo "Extracting dataset version 0cfc9d2"
+          echo "Extracting dataset version $dataset_commit_id"
           pwd
           ls -l .
 
@@ -65,7 +66,7 @@ jobs:
         run: |
           ls -l .
           python train.py
-          echo "Trained model ${{ steps.vars.outputs.sha_short }} with data 0cfc9d2"
+          echo "Trained model ${{ steps.vars.outputs.sha_short }} with data $dataset_commit_id"
           ls -l .
 
       ########### DOCKER ##################
@@ -77,9 +78,16 @@ jobs:
           context: .
           file: Model.dockerfile
           # Note: tags has to be all lower-case
-          tags: soootaleb/hetic-model:${{ steps.vars.outputs.sha_short }}
+          tags: latest,soootaleb/hetic-model:${{ steps.vars.outputs.sha_short }}
           # build on feature branches, push only on main branch
           push: true # ${{ github.ref == 'refs/heads/main' }}
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
+
+      - name: Trigger API
+        run: |
+          curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          -H 'Accept: application/vnd.github.everest-preview+json' \
+          "https://api.github.com/repos/soootaleb/hetic-train/dispatches" \
+          -d '{"event_type": "new_model", "client_payload": {"model_commit_id": "${{ steps.vars.outputs.sha_short }}"}}'
