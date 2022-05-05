@@ -46,8 +46,6 @@ jobs:
           container_id=$(docker create soootaleb/hetic-data:0cfc9d2)
           docker cp "$container_id:/data/input.data.json" .
           docker cp "$container_id:/data/output.data.json" .
-          mv ./input.data.json ./input.0cfc9d2.data.json
-          mv ./output.data.json ./output.0cfc9d2.data.json
           echo "Extracting dataset version 0cfc9d2"
           pwd
           ls -l .
