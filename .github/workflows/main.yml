@@ -44,9 +44,9 @@ jobs:
           set -x
           docker version
           container_id=$(docker create soootaleb/hetic-data:0cfc9d2)
-          docker cp "$container_id:/data/input.data.json" .
-          docker cp "$container_id:/data/output.data.json" .
-          ls -l
+          docker cp "$container_id:/data/input.data.json" /data
+          docker cp "$container_id:/data/output.data.json" /data
+          ls -l /data
 
       ############ PYTHON #############
       - name: setup python
@@ -61,7 +61,7 @@ jobs:
       
       - name: execute py script # run file
         run: |
-          ls -l
+          ls -l /data
           python train.py
 
       ########### DOCKER ##################
