@@ -43,7 +43,7 @@ jobs:
       - run: |
           set -x
           docker version
-          container_id=$(docker create "$image")
+          container_id=$(docker create soootaleb/hetic-data:0cfc9d2)
           docker cp "$container_id:/data/input.data.json" .
           docker cp "$container_id:/data/output.data.json" .
           ls -l
